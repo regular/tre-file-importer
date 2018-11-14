@@ -1,0 +1,23 @@
+{
+  "name": "tre-file-importer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/regular/tre-file-importer.git"
+  },
+  "keywords": [],
+  "author": "Jan Bölsche <jan@lagomorph.de> (https://regular.codes/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/regular/tre-file-importer/issues"
+  },
+  "homepage": "https://github.com/regular/tre-file-importer#readme",
+  "dependencies": {
+    "pull-stream": "^3.6.9"
+  }
+}
