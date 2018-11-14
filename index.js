@@ -8,6 +8,8 @@ module.exports = function(ssb) {
   }
 
   function importFile(file, opts, cb) {
+    console.log('Importing', file)
+    if (!importers.length) return cb(new Error('There are no file importers'))
     pull(
       pull.values(importers),
       pull.asyncMap( (importer, cb) => {
@@ -21,7 +23,9 @@ module.exports = function(ssb) {
       pull.take(1),
       pull.collect( (err, results) => {
         if (err) return cb(err)
-        cb(null, results[0])
+        const content = results[0]
+        if (!content) return cb(new Error('importer returned no content'))
+        cb(null, content)
       })
     )
   } 
