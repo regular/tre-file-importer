@@ -1,4 +1,5 @@
 const pull = require('pull-stream')
+const getMimeType = require('simple-mime')('application/octet-stream')
 
 module.exports = function(ssb) {
   const importers = []
@@ -8,6 +9,9 @@ module.exports = function(ssb) {
   }
 
   function importFile(file, opts, cb) {
+    if (file.name && !file.type) {
+      file.type = getMimeType(file.name)
+    }
     console.log('Importing', file)
     if (!importers.length) return cb(new Error('There are no file importers'))
     pull(
