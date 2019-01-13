@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "browser": {
+    "./file-source": "./file-source-browser"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/regular/tre-file-importer.git"
@@ -18,6 +21,12 @@
   },
   "homepage": "https://github.com/regular/tre-file-importer#readme",
   "dependencies": {
-    "pull-stream": "^3.6.9"
+    "pull-file": "^1.1.0",
+    "pull-pushable": "^2.2.0",
+    "pull-stream": "^3.6.9",
+    "simple-mime": "^0.1.0"
+  },
+  "devDependencies": {
+    "mutant": "^3.22.1"
   }
 }

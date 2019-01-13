@@ -1,4 +1,5 @@
 const pull = require('pull-stream')
+const Source = require('./file-source')
 
 module.exports = function(ssb) {
   const importers = []
@@ -8,12 +9,12 @@ module.exports = function(ssb) {
   }
 
   function importFile(file, opts, cb) {
-    console.log('Importing', file)
+    console.log('Importing', file.name)
     if (!importers.length) return cb(new Error('There are no file importers'))
     pull(
       pull.values(importers),
       pull.asyncMap( (importer, cb) => {
-        importer.importFile(ssb, file, opts, (err, content) =>{
+        importer.importFile(ssb, file, Source(file), opts, (err, content) =>{
           if (err == true) return cb(null, null)  // not my job
           if (err) return cb(err)
           cb(null, content)
