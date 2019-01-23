@@ -1,7 +1,7 @@
 const pull = require('pull-stream')
 const Source = require('./file-source')
 
-module.exports = function(ssb) {
+module.exports = function(ssb, config) {
   const importers = []
 
   function use(importer) {
@@ -9,12 +9,14 @@ module.exports = function(ssb) {
   }
 
   function importFile(file, opts, cb) {
-    console.log('Importing', file.name)
+    console.log('Importing', file.name, file.type, file.size, file.lastModifiedDate)
     if (!importers.length) return cb(new Error('There are no file importers'))
+    const prototypes = config && config.tre && config.tre.prototypes || opts.prototypes || {}
+    console.log('import file prototypes', prototypes)
     pull(
       pull.values(importers),
       pull.asyncMap( (importer, cb) => {
-        importer.importFile(ssb, file, Source(file), opts, (err, content) =>{
+        importer.importFile(ssb, file, Source(file), {prototypes}, (err, content) =>{
           if (err == true) return cb(null, null)  // not my job
           if (err) return cb(err)
           cb(null, content)

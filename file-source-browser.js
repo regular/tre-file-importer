@@ -3,7 +3,8 @@ const Pushable = require('pull-pushable')
 module.exports = function(file, opts) {
   opts = opts || {}
   const bufferSize = opts.bufferSize || 2048
-  let offset = 0
+  let offset = opts.start || 0
+  let togo = (opts.end || Number.MAX_SAFE_INTEGER) - offset
   let ended = false
 
   const pushable = Pushable(true, err => {
@@ -13,12 +14,13 @@ module.exports = function(file, opts) {
   const reader = new global.FileReader()
  
   function read() {
-    reader.readAsArrayBuffer(file.slice(offset, offset + bufferSize))
+    reader.readAsArrayBuffer(file.slice(offset, offset + Math.min(bufferSize, togo)))
   }
 
   reader.onload = ({target}) => {
     pushable.push(target.result)
-    if (target.result.byteLength == bufferSize && !ended) {
+    togo -= target.result.byteLength
+    if (target.result.byteLength == bufferSize && !ended && togo) {
       offset += bufferSize
       read()
     } else {
