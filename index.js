@@ -8,15 +8,24 @@ module.exports = function(ssb, config) {
     importers.push(importer)
   }
 
-  function importFile(file, opts, cb) {
-    console.log('Importing', file.name, file.type, file.size, file.lastModifiedDate)
+  // pass a sinle file or an array of files
+  // if you pass an array of files, they will be imported
+  // into _one_ message (if the importer back-end supports that at all)
+  function importFiles(files, opts, cb) {
+    files =  (!Array.isArray(files)) ? [files] : files
+
+    console.log('Importing')
+    files.forEach(file => {
+      file.source = ()=> FileSource(file)
+      console.log('-', file.name, file.type, file.size, file.lastModifiedDate)
+    })
     if (!importers.length) return cb(new Error('There are no file importers'))
     const prototypes = config && config.tre && config.tre.prototypes || opts.prototypes || {}
-    console.log('import file prototypes', prototypes)
+    //debug('prototypes are ', prototypes)
     pull(
       pull.values(importers),
       pull.asyncMap( (importer, cb) => {
-        importer.importFile(ssb, file, Source(file), {prototypes}, (err, content) =>{
+        importer.importFiles(ssb, files, {prototypes}, (err, content) =>{
           if (err == true) return cb(null, null)  // not my job
           if (err) return cb(err)
           cb(null, content)
@@ -35,6 +44,6 @@ module.exports = function(ssb, config) {
   
   return {
     use,
-    importFile
+    importFiles
   }
 }
