@@ -1,5 +1,5 @@
 const pull = require('pull-stream')
-const Source = require('./file-source')
+const FileSource = require('./file-source')
 
 module.exports = function(ssb, config) {
   const importers = []
