@@ -12,11 +12,16 @@ module.exports = function(ssb, config) {
   // if you pass an array of files, they will be imported
   // into _one_ message (if the importer back-end supports that at all)
   function importFiles(files, opts, cb) {
+    if (typeof opts == 'function') {
+      cb = opts
+      opts = {}
+    }
+    opts = opts || {}
     files =  (!Array.isArray(files)) ? [files] : files
 
     console.log('Importing')
     files.forEach(file => {
-      file.source = ()=> FileSource(file)
+      file.source = opts => FileSource(file, opts)
       console.log('-', file.name, file.type, file.size, file.lastModifiedDate)
     })
     if (!importers.length) return cb(new Error('There are no file importers'))
@@ -25,7 +30,7 @@ module.exports = function(ssb, config) {
     pull(
       pull.values(importers),
       pull.asyncMap( (importer, cb) => {
-        importer.importFiles(ssb, files, {prototypes}, (err, content) =>{
+        importer.importFiles(ssb, files, Object.assign({prototypes}, opts), (err, content) =>{
           if (err == true) return cb(null, null)  // not my job
           if (err) return cb(err)
           cb(null, content)
