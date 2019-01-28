@@ -18,7 +18,7 @@ module.exports = function(file, opts) {
   }
 
   reader.onload = ({target}) => {
-    pushable.push(target.result)
+    pushable.push(Buffer.from(target.result))
     togo -= target.result.byteLength
     if (target.result.byteLength == bufferSize && !ended && togo) {
       offset += bufferSize
