@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/regular/tre-file-importer#readme",
   "dependencies": {
+    "debug": "^4.1.1",
     "pull-file": "^1.1.0",
     "pull-pushable": "^2.2.0",
     "pull-stream": "^3.6.9",

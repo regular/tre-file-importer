@@ -1,5 +1,6 @@
 const pull = require('pull-stream')
 const FileSource = require('./file-source')
+const debug = require('debug')('tre-file-importer')
 
 module.exports = function(ssb, config) {
   const importers = []
@@ -25,12 +26,16 @@ module.exports = function(ssb, config) {
       console.log('-', file.name, file.type, file.size, file.lastModifiedDate)
     })
     if (!importers.length) return cb(new Error('There are no file importers'))
-    const prototypes = config && config.tre && config.tre.prototypes || opts.prototypes || {}
-    //debug('prototypes are ', prototypes)
+    const prototypes = Object.assign(
+      {}, 
+      config && config.tre && config.tre.prototypes || {},
+      opts.prototypes || {}
+    )
+    debug('prototypes are %O', prototypes)
     pull(
       pull.values(importers),
       pull.asyncMap( (importer, cb) => {
-        importer.importFiles(ssb, files, Object.assign({prototypes}, opts), (err, content) =>{
+        importer.importFiles(ssb, files, Object.assign({}, {prototypes}, opts), (err, content) =>{
           if (err == true) return cb(null, null)  // not my job
           if (err) return cb(err)
           cb(null, content)
