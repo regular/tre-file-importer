@@ -9,7 +9,7 @@ module.exports = function(ssb, config) {
     importers.push(importer)
   }
 
-  // pass a sinle file or an array of files
+  // pass a single file or an array of files
   // if you pass an array of files, they will be imported
   // into _one_ message (if the importer back-end supports that at all)
   function importFiles(files, opts, cb) {
