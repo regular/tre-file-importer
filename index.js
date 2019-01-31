@@ -52,8 +52,12 @@ module.exports = function(ssb, config) {
     )
   } 
   
-  return {
-    use,
+  const self = {
+    use: (...args) => {
+      use(...args)
+      return self
+    },
     importFiles
   }
+  return self
 }
