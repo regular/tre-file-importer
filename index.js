@@ -7,6 +7,9 @@ module.exports = function(ssb, config) {
   const importers = []
 
   function use(importer) {
+    if (typeof importer.importFiles !== 'function') {
+      throw new Error('importer must have importFiles')
+    }
     importers.push(importer)
   }
 
@@ -24,7 +27,11 @@ module.exports = function(ssb, config) {
     // make sure all files have a type
     // (the OS does not alwats provide one)
     files.forEach(f => {
-      if (!f.type) f.type = mimeType(f.name)
+      if (!f.type) {
+        const t = mimeType(f.name)
+        console.warn('file', f.name, 'has no type, correcting to', t)
+        f.type = t
+      }
     })
     
     console.log('Importing', files)
