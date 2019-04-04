@@ -1,11 +1,6 @@
 const fs = require('fs')
-const simpleMime = require('simple-mime')('application/octect-stream')
 const {basename} = require('path')
-
-function mimeType(path) {
-  if (path.endsWith('.vtt')) return 'text/vtt'
-  return simpleMime(path)
-}
+const mimeType = require('./mime-type')
 
 module.exports = function(path) {
   const stat = fs.statSync(path)

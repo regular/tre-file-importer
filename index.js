@@ -1,6 +1,7 @@
 const pull = require('pull-stream')
 const FileSource = require('./file-source')
 const debug = require('debug')('tre-file-importer')
+const mimeType = require('./mime-type')
 
 module.exports = function(ssb, config) {
   const importers = []
@@ -19,8 +20,15 @@ module.exports = function(ssb, config) {
     }
     opts = opts || {}
     files =  (!Array.isArray(files)) ? [files] : files
+    
+    // make sure all files have a type
+    // (the OS does not alwats provide one)
+    files.forEach(f => {
+      if (!f.type) f.type = mimeType(f.name)
+    })
+    
+    console.log('Importing', files)
 
-    console.log('Importing')
     files.forEach(file => {
       file.source = opts => FileSource(file, opts)
       console.log('-', file.name, file.type, file.size, file.lastModifiedDate)
